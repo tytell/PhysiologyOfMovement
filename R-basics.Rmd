@@ -1,0 +1,99 @@
+---
+title: "Problem Set 1, Basics of R"
+author: "Name:_________          Partners:_________"
+subtitle: Biology 117
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+This problem set should help you familiarize yourself with data analysis and plotting in R.  
+
+We do encourage you to work with 2-3 others on problem sets, but everyone needs to turn in their own problem set with their own calculations, explanations, etc. For each problem set, in addition to your own name, write the names of your partners indicating clearly which name is yours.
+
+Remember, if you have trouble getting a function to work, try looking in the help file for examples. Anywhere in the code below where there is a `<<your code here>>` or a comment starting with #, you'll need to replace with your own code for it to run correctly.
+
+R notebooks have text sections, like this, in which you can write whatever you like. We'll use these sections for instructions or description, and we'll ask you to fill in your interpretation or analysis.  In text sections, you can use 
+Markdown syntax for formatting (see [R markdown cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf])).
+
+# R as a calculator
+
+Below, we have a code block.  In these, you'll type in code.  For example, you can use R as a calculator.  Click the green arrow in the upper right to run the code and see the answer.
+```{r}
+4+4
+```
+
+Calculate something else here.  You can use `*` for multiplication `/` for division, and `^` for exponents.
+```{r}
+<<your code here>>
+```
+
+You can also store values for later, by assigning them to variables.  The operator `<-` means "assign to".  So `x <- 5` means "assign x the value 5".
+
+Let's calculate the energy (also called work) required for a 65 kg person to step up 15cm.  The formula is $W = mgh$ where $m$ is the mass, $g$ is gravitational acceleration (9.8 $m/s^2$), and $h$ is the height of the step.  In the code below, `#` indicates a comment, which is extra information that R ignores.  Use comments to indicate units.
+
+```{r}
+m <- 65     # kg
+g <- 9.8    # m / s^2
+h <- 15     # cm
+
+W <- m * g * (h / 100)     # divide h by 100 to convert it from cm to m
+```
+
+Now `W` should have the work.  To display the value, just type it in a code block.
+```{r}
+W
+```
+What are the units of $W$?  <<your answer here>>
+
+Now calculate the power required to lift at 20g weight up 100cm in 200ms.  The formula for power is $P = mgh / T$, where $T$ is the duration of the activity.
+```{r}
+<<your code here>>
+```
+What are the units of $P$?  <<your answer here>>
+
+# R for data manipulation
+
+For data manipulation, we'll use a set of functions called "tidyverse".  Below, we load in the library.  You don't need to change anything here, but you'll probably need a block like this in nearly all of the scripts you make.
+```{r message=FALSE, warning=FALSE}
+suppressMessages(library(tidyverse))
+```
+
+We'll usually use CSV files for data storage.  You can edit these easily in Excel, and load them into R.  Here, we're going to load in a sample data set about the weight of marbles produced in a marble factory.
+
+```{r}
+marbledata <- read.csv('marbles.csv')
+```
+This statement means, "Read the data in the csv file 'marbles.csv' and store it in the variable marbledata".
+
+Here, we show the first few rows of the marbledata dataset.  We have three marble making machines, producing red and blue marbles, and five marble machine operators (Ed, Ted, Ned, Al, and Joe).  For each machine, color, and operator, we have a marble weight.  Are the marbles different weights?
+```{r}
+head(marbledata)
+```
+
+```{r}
+qplot(data=marbledata,
+      x=machine, y=weight, color=color,
+      geom="boxplot")
+```
+```{r}
+qplot(data=marbledata,
+      x=machine, y=diameter, color=color,
+      geom="boxplot")
+```
+```{r}
+nbad <- 
+  marbledata %>%
+  group_by(machine, color) %>%
+  summarize(nbad = sum(bad == "bad") / n())
+
+nbad
+```
+
+```{r}
+qplot(data=marbledata,
+      x=machine, color=color,
+      geom="bar")
+```
+
